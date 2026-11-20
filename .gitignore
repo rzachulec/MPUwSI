@@ -1,0 +1,32 @@
+# macOS
+.DS_Store
+._*
+
+# Sekrety / klucze API (LiteLLM itp.)
+.env
+.env.*
+!.env.example
+*.key
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.ipynb_checkpoints/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Edytory / IDE
+.vscode/
+.idea/
+*.swp
+
+# Pliki tymczasowe / logi
+*.log
+*.tmp
+~$*
+
+# Lokalne ustawienia Claude Code
+.claude/settings.local.json
