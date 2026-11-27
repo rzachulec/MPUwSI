@@ -4,7 +4,7 @@ Bohdan Tkachenko, nr indeksu 256630
 
 ## Dane i przebieg prób
 
-Model **gpt-6-luna** (tryb rozumowania **medium**) przetestowano 11 listopada 2026 r. w interfejsie tekstowym Codex. Każdy z sześciu promptów uruchomiono trzykrotnie w osobnych sesjach. Litery A–F oznaczają scenariusze, a cyfry 1–3 ich powtórzenia.
+Model **gpt-6-luna** przetestowano 11 listopada 2026 r. w trybie **medium**. Każdy z sześciu promptów podano trzykrotnie w osobnych sesjach tekstowych. Litery A–F oznaczają scenariusze, a cyfry 1–3 ich powtórzenia.
 
 Historię `t1–t15` tworzą rekordy 16892–16906 pliku `bank-full.csv`, liczone od 1 po nagłówku. Bieżący przypadek `t16` pochodzi z rekordu 16911 w teście D i z rekordu 16912 w pozostałych testach. W obu przypadkach klient nie założył lokaty. Źródło danych to *Bank Marketing*, UCI Machine Learning Repository, DOI 10.24432/C5K306.
 

@@ -1,6 +1,6 @@
 # Pilotaż – Bohdan Tkachenko
 
-**Model:** `gpt-6-luna` (Codex, tryb rozumowania `medium`, 11.11.2026). Sześć scenariuszy (A–F), po trzy powtórzenia w osobnych sesjach, na 15 rekordach ze zbioru UCI *Bank Marketing* zakodowanych symbolicznie jako `p, q, r, s`.
+Model `gpt-6-luna` testowano 11 listopada 2026 r. w trybie `medium`. Każdy z sześciu scenariuszy (A–F) powtórzono trzykrotnie w osobnych sesjach tekstowych. W próbach użyto 15 rekordów ze zbioru UCI *Bank Marketing*, a cechy zapisano jako `p, q, r, s`.
 
 - Przy pustym kontekście (A i B) model w każdej z sześciu prób wskazał te same wartości cech `p`, `q` i `r`. W A1 i A3 podał 10 wystąpień `q=true` zamiast 11.
 - Przy znanych cechach (C–F) w 8 z 12 prób model oparł uzasadnienie na pasujących obserwacjach, a w 4 (D2, D3, E2, F1) policzył wyłącznie częstości z całej historii. W D nie zmieniło to wniosku o `p`, natomiast w E2 i F1 doprowadziło do przeciwnego wskazania niż wynika z klasy warunkowej.

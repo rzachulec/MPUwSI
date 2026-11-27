@@ -2,7 +2,7 @@
 
 ## Badanie na danych bankowych
 
-Model `gpt-6-luna`, tryb rozumowania `medium`, interfejs tekstowy Codex. Odpowiedzi zebrano 11 listopada 2026 r. w 18 osobnych sesjach. W zapisie prób dostępna jest data, a temperatura pozostaje nieustalona.
+Model `gpt-6-luna` testowano w trybie `medium`. Odpowiedzi zebrano 11 listopada 2026 r. w 18 osobnych sesjach tekstowych. Temperatura pozostaje nieustalona.
 
 W zbiorze *Bank Marketing* (UCI Machine Learning Repository, DOI 10.24432/C5K306) `p` oznacza założenie lokaty terminowej, `q` posiadanie kredytu mieszkaniowego, `r` posiadanie kredytu osobistego, a `s` kredyt oznaczony przez bank jako niespłacany. W promptach cechy występują jako symbole.
 
