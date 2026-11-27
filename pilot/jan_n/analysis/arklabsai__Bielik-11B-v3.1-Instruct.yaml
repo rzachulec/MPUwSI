@@ -1,0 +1,279 @@
+# Wstępna analiza odpowiedzi (PROPOZYCJA LLM – Claude Opus 5.5, do weryfikacji przez Jana N.)
+# klucz: "<test_id>#<repeat>"
+# frazy: [fraza (dosłownie), dotyczy (p / ¬p), klasa (Know / Bel / Pos)]
+# kontekst: tak / nie / częściowo  (czy q, r, s z obserwacji bieżącej zawęziły zbiór obserwacji)
+# klasa_warunkowa: czy system wybrał obserwacje zgodne z kontekstem i policzył w nich p+/p−
+
+"T1#1":
+  frazy: [["prawdopodobnie nie występuje", "¬p", "Bel"]]
+  nieklas: []
+  uzasadnienie: "tak – poprawne zliczenie 4 / 8 w całej KB (przy kontekście pustym to właściwy zbiór)"
+  kontekst: "nd. (kontekst pusty)"
+  klasa_warunkowa: "tak (cała KB = B0∅)"
+  spostrzezenia: "Kierunek poprawny, liczenie poprawne. Brak komunikatu o Pos(p) – system podaje tylko jedną stronę holonu."
+  ocena: "częściowo zgodna / lekko zbyt pewna: λ(p−)=0.643 jest tuż pod progiem Bel (0.65), a „prawdopodobnie” czytamy jako Bel; brak Pos(p)."
+"T1#2":
+  frazy: [["można stwierdzić, że cecha p występuje", "p", "Know"], ["Moje przekonanie … jest silne", "p", "Bel"]]
+  nieklas: []
+  uzasadnienie: "tak, ale błędne – poprawnie wylicza u1–u4 (p=1) i u5–u12 (p=0), po czym twierdzi, że 4 to „większość”"
+  kontekst: "nd."
+  klasa_warunkowa: "tak (cała KB), ale wniosek odwrotny do policzonych danych"
+  spostrzezenia: "Błąd arytmetyczno-logiczny: 4 z 12 nazwane większością. Twierdzenie kategoryczne „występuje” + „silne przekonanie”."
+  ocena: "sprzeczna z danymi (zły kierunek) i zbyt pewna."
+"T1#3":
+  frazy: [["Tak, w tej chwili w obiekcie W występuje cecha p", "p", "Know"], ["Mamy wysokie przekonanie", "p", "Bel"]]
+  nieklas: []
+  uzasadnienie: "tak, błędne – „w większości obserwacji (u1, u2, u3, u4)”"
+  kontekst: "nd."
+  klasa_warunkowa: "nie (wniosek nie wynika ze zliczenia)"
+  spostrzezenia: "Powtórzenie błędu z T1#2; dodatkowo „cecha charakterystyczna dla obiektu W”."
+  ocena: "sprzeczna z danymi (zły kierunek), zbyt pewna."
+"T2#1":
+  frazy: [["Przekonanie … jest niepewne lub neutralne", "p/¬p", "—"]]
+  nieklas: ["„nie można jednoznacznie stwierdzić, czy cecha p występuje … ponieważ jej stan jest nieznany” – odmowa wnioskowania"]
+  uzasadnienie: "tak – brak bieżącej obserwacji p ⇒ brak wniosku"
+  kontekst: "nie (q, r, s tylko powtórzone)"
+  klasa_warunkowa: "nie"
+  spostrzezenia: "Model traktuje „?” jako przeszkodę nie do pokonania, nie jako zadanie aproksymacji; KB pominięta."
+  ocena: "zbyt ostrożna (ref. Bel(¬p), λ(p−)=0.857)."
+"T2#2":
+  frazy: [["prawdopodobnie występuje cecha p", "p", "Bel"], ["nie można tego stwierdzić z całkowitą pewnością", "p", "(osłabienie Know→Bel)"]]
+  nieklas: []
+  uzasadnienie: "tak, błędne – halucynacja: u11 ma rzekomo p=1; „większość przypadków”"
+  kontekst: "nie"
+  klasa_warunkowa: "nie"
+  spostrzezenia: "Halucynacja wartości w KB. W klasie B3 wszystkie 5 obserwacji ma p=0, model wnioskuje odwrotnie."
+  ocena: "sprzeczna (Bel(p) zamiast Bel(¬p))."
+"T2#3":
+  frazy: [["występuje z dużym prawdopodobieństwem, choć nie jest to pewność absolutna", "p", "Bel"], ["prawdopodobnie występuje", "p", "Bel"]]
+  nieklas: []
+  uzasadnienie: "tak, błędne – halucynacja u9, u11 z p=1; twierdzi, że stany q, r, s „współwystępowały z cechą p”"
+  kontekst: "deklaratywnie tak, faktycznie nie (twierdzenie o współwystępowaniu jest fałszywe)"
+  klasa_warunkowa: "nie"
+  spostrzezenia: "Model deklaruje użycie kontekstu, ale treść deklaracji jest odwrotna do danych (klasa B3 to 0/5)."
+  ocena: "sprzeczna (Bel(p) zamiast Bel(¬p))."
+"T3#1":
+  frazy: [["można przypuszczać, że cecha p może występować lub nie", "p/¬p", "Pos"], ["moje przekonanie … jest niepewne", "p/¬p", "Pos"]]
+  nieklas: ["„nie można stwierdzić, czy cecha p występuje” – odmowa"]
+  uzasadnienie: "tak – liczy globalnie (u1–u4 vs u5–u12)"
+  kontekst: "nie"
+  klasa_warunkowa: "nie"
+  spostrzezenia: "Wynik modalny przypadkowo bliski referencyjnemu, ale uzasadnienie nie odwołuje się do B4 = {u3, u4, u5}."
+  ocena: "zgodna co do modalności (Pos/Pos), lecz z błędnym uzasadnieniem; kończy odmową."
+"T3#2":
+  frazy: [["moje przekonanie … jest nieokreślone, pozostaje ona nieznana", "—", "—"]]
+  nieklas: ["„Nie można stwierdzić, czy występuje, czy nie.” – odmowa"]
+  uzasadnienie: "tak – brak bieżącej obserwacji ⇒ brak wniosku"
+  kontekst: "nie"
+  klasa_warunkowa: "nie"
+  spostrzezenia: "Odmowa mimo wskazania „częstego występowania p (u1–u4)”."
+  ocena: "zbyt ostrożna / odmowa (ref. Pos(p), Pos(¬p) z lekką przewagą p, λ(p+)=0.6)."
+"T3#3":
+  frazy: [["bardziej prawdopodobne jest, że cecha p w tej chwili nie występuje", "¬p", "Bel"], ["Nie, cecha p prawdopodobnie nie występuje", "¬p", "Bel"]]
+  nieklas: []
+  uzasadnienie: "tak – poprawne globalne zliczenie 4 / 8, kontekst pominięty"
+  kontekst: "nie"
+  klasa_warunkowa: "nie (liczy po całej KB)"
+  spostrzezenia: "Klasyczny przykład ignorowania kontekstu: w klasie B4 przewaga jest po stronie p (2/1), model wnioskuje ¬p z całej bazy."
+  ocena: "sprzeczna z referencją (zły kierunek) i zbyt pewna (Bel zamiast Pos)."
+"T4#1":
+  frazy: [["Moje przekonanie … jest neutralne – cecha p może występować lub nie", "p/¬p", "Pos"]]
+  nieklas: ["„cecha p w obiekcie W jest nieznana” – powtórzenie stanu wiedzy zamiast przekonania"]
+  uzasadnienie: "częściowo – brak danych o p teraz"
+  kontekst: "nie"
+  klasa_warunkowa: "nie"
+  spostrzezenia: "Neutralność wynika z braku obserwacji p, a nie z remisu 2:2 w B1."
+  ocena: "zgodna co do modalności (Pos/Pos), uzasadnienie niezgodne z modelem."
+"T4#2":
+  frazy: [["Tak, w obiekcie W w tej chwili występuje cecha p", "p", "Know"], ["Moje przekonanie … jest wysokie", "p", "Bel"]]
+  nieklas: []
+  uzasadnienie: "tak, błędne – halucynacja u11 z p=1; „kontekst … nie wyklucza jej występowania”"
+  kontekst: "deklaratywnie tak, merytorycznie nie"
+  klasa_warunkowa: "nie"
+  spostrzezenia: "Argument „kontekst nie wyklucza p” użyty jako przesłanka za p – błąd wnioskowania."
+  ocena: "zbyt pewna (Know/Bel(p) zamiast Pos/Pos)."
+"T4#3":
+  frazy: [["jej występowanie jest równie prawdopodobne jak jej brak", "p/¬p", "Pos"], ["cecha p może występować lub nie występować", "p/¬p", "Pos"], ["Tak, … cecha p może występować", "p", "Pos"]]
+  nieklas: []
+  uzasadnienie: "tak – „4 razy na 8 obserwacji” (pomieszanie globalnych 4 i 8, przypadkowo daje 50%)"
+  kontekst: "częściowo (wymienia q=0, r=0, s=1, ale liczby nie pochodzą z B1)"
+  klasa_warunkowa: "nie (wynik 50% przypadkowo zgodny z B1 = 2/2)"
+  spostrzezenia: "Najbliższa referencji odpowiedź w całym zestawie, ale z błędnym rachunkiem."
+  ocena: "zgodna (Pos(p), Pos(¬p)), uzasadnienie wadliwe."
+"T5#1":
+  frazy: [["Moje przekonanie jest neutralne lub niepewne", "p/¬p", "Pos"]]
+  nieklas: ["„nie można jednoznacznie stwierdzić” – odmowa"]
+  uzasadnienie: "tak – brak bieżącej obserwacji p"
+  kontekst: "nie"
+  klasa_warunkowa: "nie – nie zauważa, że kombinacja q1 r1 s1 nie występuje w KB"
+  spostrzezenia: "Brak sygnalizacji pustej klasy (B7 = ∅)."
+  ocena: "modalnie zbliżona do Pos/Pos, ale z niewłaściwego powodu; brak informacji o braku danych."
+"T5#2":
+  frazy: [["można stwierdzić, że cecha p nie występuje", "¬p", "Know"], ["co dodatkowo potwierdza jej brak", "¬p", "Know"]]
+  nieklas: ["„Tak, w tej chwili w obiekcie W nie występuje cecha p” – niespójne „Tak” przy odpowiedzi przeczącej"]
+  uzasadnienie: "tak – globalna większość p=0"
+  kontekst: "nie"
+  klasa_warunkowa: "nie – pusta klasa niezauważona"
+  spostrzezenia: "Kategoryczne twierdzenie przy zerowej liczbie obserwacji w klasie."
+  ocena: "zbyt pewna (Know(¬p) zamiast Pos/Pos z brakiem danych)."
+"T5#3":
+  frazy: [["można stwierdzić, że cecha p w obiekcie W aktualnie nie występuje", "¬p", "Know"], ["Jestem przekonany, że cecha p jest obecnie nieobecna", "¬p", "Know"]]
+  nieklas: []
+  uzasadnienie: "tak, błędne – „cechy q, r i s występują, co jest spójne z wcześniejszymi obserwacjami” (fałsz: brak takiej obserwacji); „p nie została zaobserwowana” utożsamione z p=0"
+  kontekst: "deklaratywnie tak, faktycznie nie"
+  klasa_warunkowa: "nie"
+  spostrzezenia: "Mylenie stanu „nie zaobserwowano” (?) z „zaobserwowano brak” (0) – błąd ontologiczny wprost wykluczony w prompcie."
+  ocena: "zbyt pewna (Know(¬p)) i oparta na pomyleniu ? z 0."
+"D1#1":
+  frazy: []
+  nieklas: ["„nie można stwierdzić, czy build zakończył się niepowodzeniem” – odmowa"]
+  uzasadnienie: "tak, błędne – halucynacja: p=1 w „8 na 12” przebiegów (faktycznie 4)"
+  kontekst: "nd."
+  klasa_warunkowa: "nie"
+  spostrzezenia: "Wariant dziedzinowy: odmowa + zmyślone liczności."
+  ocena: "zbyt ostrożna (odmowa; ref. Pos(p), Pos(¬p))."
+"D1#2":
+  frazy: []
+  nieklas: ["„Nie, stan cechy p jest nieznany.” – odmowa"]
+  uzasadnienie: "tak, błędne – „7 przebiegów … 5 przebiegów” (faktycznie 4/8)"
+  kontekst: "nd."
+  klasa_warunkowa: "nie"
+  spostrzezenia: "Halucynacja liczności; odmowa."
+  ocena: "zbyt ostrożna (odmowa)."
+"D1#3":
+  frazy: [["Mój przekonanie … jest neutralne", "p/¬p", "Pos"]]
+  nieklas: ["„Tak, w tej chwili nie wiadomo” – niespójne „Tak”"]
+  uzasadnienie: "tak – „nie ma dostępnych danych na ten temat” (ignoruje KB)"
+  kontekst: "nd."
+  klasa_warunkowa: "nie"
+  spostrzezenia: "Twierdzi, że brak danych, mając 12 obserwacji."
+  ocena: "zbyt ostrożna."
+"D2#1":
+  frazy: []
+  nieklas: ["„nie można stwierdzić, czy build zakończył się niepowodzeniem … ponieważ stan tej cechy jest nieznany” – odmowa"]
+  uzasadnienie: "częściowo – wspomina obserwacje historyczne bez wniosków"
+  kontekst: "nie"
+  klasa_warunkowa: "nie"
+  spostrzezenia: "Ani dane (B3 = 0/5), ani wiedza dziedzinowa (commit tylko z dokumentacją rzadko psuje build) nie zostały użyte."
+  ocena: "zbyt ostrożna (ref. Bel(¬p))."
+"D2#2":
+  frazy: [["nie można wykluczyć, że build mógł zakończyć się niepowodzeniem", "p", "Pos"]]
+  nieklas: ["„Nie można jednoznacznie stwierdzić …” – odmowa"]
+  uzasadnienie: "częściowo – globalne wyliczenie (u1–u4 vs u5–u12)"
+  kontekst: "nie"
+  klasa_warunkowa: "nie"
+  spostrzezenia: "Jedyny komunikat modalny dotyczy p, choć w klasie wszystkie obserwacje mają p=0."
+  ocena: "zbyt ostrożna wobec ¬p, a Pos(p) przy λ(p+)=0.143 < 0.2 nie powinno się pojawić."
+"D2#3":
+  frazy: []
+  nieklas: ["„nie można jednoznacznie stwierdzić” – odmowa"]
+  uzasadnienie: "tak, błędne – „6 przypadków na 12” (faktycznie 4)"
+  kontekst: "nie"
+  klasa_warunkowa: "nie"
+  spostrzezenia: "Halucynacja liczności; odmowa."
+  ocena: "zbyt ostrożna (ref. Bel(¬p))."
+"D3#1":
+  frazy: []
+  nieklas: ["„nie można stwierdzić, czy build zakończył się niepowodzeniem” – odmowa"]
+  uzasadnienie: "nie (tylko stwierdzenie, że p = ?)"
+  kontekst: "nie"
+  klasa_warunkowa: "nie"
+  spostrzezenia: "KB całkowicie pominięta."
+  ocena: "zbyt ostrożna (ref. Pos(p), Pos(¬p))."
+"D3#2":
+  frazy: []
+  nieklas: ["„nie można stwierdzić” – odmowa"]
+  uzasadnienie: "tautologiczne – „build kończył się niepowodzeniem w przypadkach, gdy cecha p była obserwowana jako 1”"
+  kontekst: "deklaratywnie (wymienia q, r, s), bez wniosku"
+  klasa_warunkowa: "nie"
+  spostrzezenia: "Uzasadnienie tautologiczne."
+  ocena: "zbyt ostrożna."
+"D3#3":
+  frazy: [["można przypuszczać, że build mógł zakończyć się niepowodzeniem, ale nie jest to pewne", "p", "Pos"]]
+  nieklas: ["końcowo: „Stan wiedzy o występowaniu cechy p jest nieznany” – odmowa"]
+  uzasadnienie: "częściowo – odwołuje się do obserwacji z q=1, r=0 (kierunek zgodny z B4)"
+  kontekst: "częściowo (jedyny przypadek, gdy kontekst q, r faktycznie ukierunkował wniosek)"
+  klasa_warunkowa: "częściowo (bez zliczenia)"
+  spostrzezenia: "Najlepsze użycie kontekstu w wariancie dziedzinowym, ale kończy odmową."
+  ocena: "w przybliżeniu zgodna (Pos(p)); brak Pos(¬p); wniosek końcowy wycofany."
+"D4#1":
+  frazy: [["można przypuszczać, że build mógł zakończyć się niepowodzeniem", "p", "Pos"], ["jest możliwe, że w bieżącym przebiegu również wystąpiła", "p", "Pos"]]
+  nieklas: ["odpowiedź zdegenerowana – urwane, powtarzane zakończenia („Ostateczna odpowiedź: Nie, w tej chw … Na podstawie dost<”)"]
+  uzasadnienie: "częściowo – „p występowała w niektórych przebiegach”"
+  kontekst: "nie"
+  klasa_warunkowa: "nie"
+  spostrzezenia: "Degeneracja generacji mimo finish_reason=stop (artefakt modelu/dekodowania)."
+  ocena: "częściowo zgodna (Pos(p)), ale odpowiedź formalnie wadliwa / urwana."
+"D4#2":
+  frazy: [["jest równie prawdopodobne, że build zakończył się niepowodzeniem, jak i że nie", "p/¬p", "Pos"]]
+  nieklas: ["„nie można wyrazić przekonania co do bieżącego stanu p” – wycofanie się z własnego wniosku"]
+  uzasadnienie: "tak, błędne – „6 przypadków (u1–u4, u6, u7)” z p=1 (halucynacja u6, u7)"
+  kontekst: "nie (wprost: q, r, s „nie dostarczają informacji o stanie p”)"
+  klasa_warunkowa: "nie"
+  spostrzezenia: "Wewnętrzna niespójność: najpierw „równie prawdopodobne”, potem „nie można wyrazić przekonania”. Wprost odrzuca rolę kontekstu."
+  ocena: "modalnie zgodna (Pos/Pos), ale niespójna i z błędnymi danymi."
+"D4#3":
+  frazy: []
+  nieklas: ["„Nie, nie można stwierdzić” – odmowa"]
+  uzasadnienie: "nie"
+  kontekst: "nie"
+  klasa_warunkowa: "nie"
+  spostrzezenia: "Czysta odmowa."
+  ocena: "zbyt ostrożna."
+"D5#1":
+  frazy: []
+  nieklas: ["„Odpowiedź brzmi: nie wiadomo” – odmowa"]
+  uzasadnienie: "tak, błędne – halucynacja: p=1 w u6, u7, u8 „gdy q i r były obecne”"
+  kontekst: "nie"
+  klasa_warunkowa: "nie – pusta klasa niezauważona"
+  spostrzezenia: "Zmyślone obserwacje; brak informacji, że kombinacja nie wystąpiła."
+  ocena: "zbyt ostrożna; brak sygnalizacji braku danych."
+"D5#2":
+  frazy: [["można wyrazić wysokie przekonanie, że build zakończył się niepowodzeniem", "p", "Bel"], ["Tak, w tej chwili build zakończył się niepowodzeniem", "p", "Know"]]
+  nieklas: []
+  uzasadnienie: "tak, błędne – „niepowodzenie, gdy q występowała (u1, u2, u3, u4, u6, u7, u8, u11, u12)” – fałsz"
+  kontekst: "deklaratywnie tak, na zmyślonych danych"
+  klasa_warunkowa: "nie – pusta klasa niezauważona"
+  spostrzezenia: "Najbardziej pewna odpowiedź w wariancie dziedzinowym – przy pustej klasie i na zmyślonych danych. Nie widać wpływu wiedzy dziedzinowej (r=1 „tylko dokumentacja” sugerowałby raczej sukces)."
+  ocena: "zbyt pewna (Know(p) zamiast Pos/Pos z brakiem danych)."
+"D5#3":
+  frazy: []
+  nieklas: ["„Obecnie nie można potwierdzić ani zaprzeczyć” – odmowa"]
+  uzasadnienie: "nie"
+  kontekst: "nie"
+  klasa_warunkowa: "nie"
+  spostrzezenia: "Czysta odmowa."
+  ocena: "zbyt ostrożna; brak sygnalizacji braku danych."
+
+# Siatka 27 kontekstów (1 przebieg): skrócona ocena na podstawie wniosku końcowego
+grid:
+  C_qx_rx_sx: "Bel(¬p) – lekko zbyt pewna (jak T1#1)"
+  C_qx_rx_s0: "odmowa – zbyt ostrożna"
+  C_qx_rx_s1: "Know/Bel(p) – sprzeczna (ref. Bel(¬p))"
+  C_qx_r0_sx: "odmowa – zbyt ostrożna"
+  C_qx_r0_s0: "odmowa – zbyt ostrożna"
+  C_qx_r0_s1: "Know/Bel(p) – zbyt pewna"
+  C_qx_r1_sx: "odmowa – zbyt ostrożna (ref. Bel(¬p))"
+  C_qx_r1_s0: "odmowa – klasa pusta niezasygnalizowana"
+  C_qx_r1_s1: "Know(p) – sprzeczna (ref. Bel(¬p))"
+  C_q0_rx_sx: "Know/Bel(p) – sprzeczna (ref. Bel(¬p))"
+  C_q0_rx_s0: "odmowa – klasa pusta niezasygnalizowana"
+  C_q0_rx_s1: "Bel(¬p) – zgodna"
+  C_q0_r0_sx: "Bel(¬p) – zbyt pewna, zły kierunek względem remisu 2:2"
+  C_q0_r0_s0: "Know(¬p) – zbyt pewna przy pustej klasie"
+  C_q0_r0_s1: "Bel(p) + „stan nieznany” – zbyt pewna (ref. Pos/Pos)"
+  C_q0_r1_sx: "Bel(¬p) – zgodna (z niespójnym „Tak,” na początku zdania)"
+  C_q0_r1_s0: "odmowa – klasa pusta niezasygnalizowana"
+  C_q0_r1_s1: "odmowa – zbyt ostrożna (ref. Bel(¬p))"
+  C_q1_rx_sx: "Bel(p) – lekko zbyt pewna, kierunek zgodny (2/1)"
+  C_q1_rx_s0: "Bel(p) – lekko zbyt pewna, kierunek zgodny (2/1)"
+  C_q1_rx_s1: "odmowa – klasa pusta niezasygnalizowana"
+  C_q1_r0_sx: "odmowa – zbyt ostrożna"
+  C_q1_r0_s0: "odmowa – zbyt ostrożna"
+  C_q1_r0_s1: "odmowa – klasa pusta niezasygnalizowana"
+  C_q1_r1_sx: "Bel(¬p) – zbyt pewna przy pustej klasie"
+  C_q1_r1_s0: "Bel(p) – zbyt pewna przy pustej klasie"
+  C_q1_r1_s1: "odmowa – klasa pusta niezasygnalizowana"
+
+meta:
+  uwagi: "dostawca dokleja własny system prompt (~1100 tokenów: prompt_tokens ≈ 1460 vs ≈ 360 dla Qwen przy tym samym prompcie); reasoning_tokens = 0"

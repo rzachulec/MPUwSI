@@ -1,0 +1,223 @@
+# Wstępna analiza odpowiedzi (PROPOZYCJA LLM – Claude Opus 5.5, do weryfikacji przez Jana N.)
+# Weryfikacja 2026-11-26: wszystkie 57 odpowiedzi przeczytane w całości; poprawiono D2#2, D4#1, D4#2 i 5 kontekstów siatki,
+# dopisano błędy poboczne dot. KB i ślady wiedzy dziedzinowej (D2#2, D2#3, D4#3, D5#1).
+
+meta:
+  uwagi: "max_tokens=16384; dostawca nie dokleja system promptu (prompt_tokens ≈ 360); reasoning_tokens = 0 – analiza krok po kroku w treści odpowiedzi"
+
+"T1#1":
+  frazy: [["przekonanie … jest neutralne lub bardzo słabo rozróżnialne, z lekkim przesunięciem ku stanowi „nie występuje”", "¬p", "Pos"], ["bardziej prawdopodobne jest, że cecha p nie występuje", "¬p", "Pos"], ["z istotnym prawdopodobieństwem (ok. 33%) może ona jednak występować", "p", "Pos"]]
+  nieklas: ["„1/3”, „2/3”"]
+  uzasadnienie: "tak – 4 / 8 w całej KB"
+  kontekst: "nd."
+  klasa_warunkowa: "tak (cała KB)"
+  spostrzezenia: "Jedna z nielicznych odpowiedzi w całym badaniu, która wprost wyraża obie składowe holonu. Poboczny fałsz: „jeśli q=1 i r=0, to p=1 w 3 z 4 przypadków” (jest 2 z 3)."
+  ocena: "zgodna (Pos(p), Pos(¬p))."
+"T1#2":
+  frazy: [["szansa na to, iż p=0 jest wyższa niż szansa na p=1", "¬p", "Pos"]]
+  nieklas: ["„prawdopodobieństwo jej wystąpienia wynosi dokładnie 50%” – sprzeczne z własnym rachunkiem 1/3 vs 2/3"]
+  uzasadnienie: "tak – 4 / 8"
+  kontekst: "nd."
+  klasa_warunkowa: "tak (cała KB)"
+  spostrzezenia: "Nagłówek „dokładnie 50%” przeczy wnioskowi „2:1 na korzyść ¬p”. Poboczny fałsz: „nie ma reguły «jeśli r=1 to p=0» obowiązującej we wszystkich przypadkach” (obowiązuje, 5/5)."
+  ocena: "niespójna."
+"T1#3":
+  frazy: [["cecha p najprawdopodobniej NIE występuje", "¬p", "Bel"], ["Stopień przekonania: umiarkowany do wysokiego", "¬p", "Bel"]]
+  nieklas: []
+  uzasadnienie: "tak – 4 / 8; poboczne fałsze („gdy p=0 … s jest zawsze 1” – u5 ma s=0; „gdy p=1 … s=1” – u3, u4 mają s=0)"
+  kontekst: "nd."
+  klasa_warunkowa: "tak (cała KB)"
+  spostrzezenia: "Halucynacje w części opisowej, rachunek główny poprawny."
+  ocena: "lekko zbyt pewna (Bel(¬p) przy λ=0.643)."
+"T2#1":
+  frazy: [["cecha p w bieżącej chwili nie występuje", "¬p", "Know"], ["Moje przekonanie … jest bardzo wysokie, że p=0", "¬p", "Bel"]]
+  nieklas: []
+  uzasadnienie: "tak – jawna filtracja wiersz po wierszu, B3 = 5/5"
+  kontekst: "tak"
+  klasa_warunkowa: "tak (B3)"
+  spostrzezenia: "Wzorcowa filtracja; sformułowanie kategoryczne osłabione „bardzo wysokim przekonaniem”."
+  ocena: "zgodna kierunkowo, na granicy przeszacowania (Know/Bel)."
+"T2#2":
+  frazy: [["W obiekcie W nie występuje cecha p", "¬p", "Know"], ["bardzo wysokie (bliskie pewności)", "¬p", "Know"]]
+  nieklas: []
+  uzasadnienie: "tak, z błędem – klasa wyznaczona jako 4 obserwacje (pominięty u8)"
+  kontekst: "tak"
+  klasa_warunkowa: "tak, ale niepełna (4/4 zamiast 5/5)"
+  spostrzezenia: "„ścisła reguła … nie ma kontrprzykładu” ⇒ pewność; brak korekty na małą próbę."
+  ocena: "zbyt pewna (Know(¬p) zamiast Bel(¬p))."
+"T2#3":
+  frazy: [["bardzo silne i pewne (100% zgodności z danymi historycznymi …)", "¬p", "Know"]]
+  nieklas: ["„100%”"]
+  uzasadnienie: "tak, z błędem – „wszystkie 4 obserwacje” (pominięty u8)"
+  kontekst: "tak"
+  klasa_warunkowa: "tak, ale niepełna"
+  spostrzezenia: "Częstość z próby utożsamiona z pewnością."
+  ocena: "zbyt pewna (Know(¬p))."
+"T3#1":
+  frazy: [["najprawdopodobniej występuje cecha p", "p", "Bel"], ["umiarowane, lecz skłaniające się ku wartości 1", "p", "Pos"]]
+  nieklas: []
+  uzasadnienie: "tak – najpierw tylko u3, u4, potem poprawnie u3, u4, u5 (2/1)"
+  kontekst: "tak"
+  klasa_warunkowa: "tak (B4, po autokorekcie)"
+  spostrzezenia: "Autokorekta w toku analizy, ale bez sprzecznego nagłówka."
+  ocena: "zgodna (Pos(p) z przewagą; „najprawdopodobniej” lekko mocne)."
+"T3#2":
+  frazy: [["najprawdopodobniej występuje", "p", "Bel"], ["z umiarkowanym poziomem pewności (ok. 67%)", "p", "Pos"]]
+  nieklas: ["„ok. 67%”"]
+  uzasadnienie: "tak – tabela typów obserwacji, B4 = 2/1"
+  kontekst: "tak"
+  klasa_warunkowa: "tak (B4)"
+  spostrzezenia: "Jawnie zaznacza, że p=0 „również jest możliwe” – obie strony holonu."
+  ocena: "zgodna."
+"T3#3":
+  frazy: [["najbardziej prawdopodobne jest, że … występuje cecha p", "p", "Pos/Bel"], ["nie możemy mieć absolutnej pewności", "p", "(osłabienie)"]]
+  nieklas: ["„około 67%”"]
+  uzasadnienie: "tak – B4 = 2/1; poboczne fałsze „gdy q=0: s=1 ⇒ p=1 (u1, u2, u9, u10)” (u9, u10 mają p=0) i „s=0 (i r=1) ⇒ p=0 (u6–u8, u11–u12)” (te wiersze mają s=1)"
+  kontekst: "tak"
+  klasa_warunkowa: "tak (B4)"
+  spostrzezenia: "Rachunek główny poprawny, część „głębszej analizy” halucynowana."
+  ocena: "zgodna."
+"T4#1":
+  frazy: [["W obiekcie W nie występuje cecha p", "¬p", "Know"], ["Jest to przekonanie umiarkowane", "¬p", "Pos"]]
+  nieklas: ["„W logice, jeśli nie ma dowodu na «tak», a jest tendencja do «nie», stawiamy na «nie»” – heurystyka spoza modelu"]
+  uzasadnienie: "tak – B1 = 2/2 znalezione (po autokorekcie), rozstrzygnięte priorem z całej KB (8/12)"
+  kontekst: "tak, ale nadpisany"
+  klasa_warunkowa: "znaleziona, odrzucona na rzecz marginesu"
+  spostrzezenia: "Ten sam dryf co u Qwen3.5-122B (T4#1): remis w klasie rozstrzygany szerszym zbiorem."
+  ocena: "zbyt pewna / niezgodna (¬p zamiast Pos/Pos)."
+"T4#2":
+  frazy: [["Moje przekonanie … jest neutralne / nieokreślone", "p/¬p", "Pos"]]
+  nieklas: ["„z większą pewnością niż rzut monetą”, „50%”"]
+  uzasadnienie: "tak – B1 = 2/2; świadomie odrzuca prior 8/12"
+  kontekst: "tak"
+  klasa_warunkowa: "tak (B1)"
+  spostrzezenia: "Rozważa i odrzuca rozstrzyganie priorem."
+  ocena: "zgodna."
+"T4#3":
+  frazy: [["Nie ma podstaw, aby preferować odpowiedź «tak» nad «nie»", "p/¬p", "Pos"]]
+  nieklas: ["„Moje przekonanie … wynosi 50%”"]
+  uzasadnienie: "tak – B1 = 2/2"
+  kontekst: "tak"
+  klasa_warunkowa: "tak (B1)"
+  spostrzezenia: "Neutralność wyrażona liczbą."
+  ocena: "zgodna."
+"T5#1":
+  frazy: [["istnieje bardzo silne przekonanie, że cecha p … NIE występuje", "¬p", "Bel/Know"], ["Prawdopodobieństwo, że p=0, wynosi blisko 100%", "¬p", "Know"]]
+  nieklas: []
+  uzasadnienie: "tak – „nie istnieje ani jedna obserwacja” q1 r1 s1, potem reguła „r=1 ⇒ p=0” i kNN; fałsze: „We wszystkich 12 przypadkach, gdy r=1”, „Podzbiór B (q=1, s=1): u1, u2, u9, u10” (mają q=0), „s=0 ⇒ p=1 w 4/4” (jest 2/3), „s=1 ⇒ p=0 w 8/9” (jest 7/9)"
+  kontekst: "tak"
+  klasa_warunkowa: "pusta klasa zauważona, zastąpiona regułą jednej cechy"
+  spostrzezenia: "„blisko 100%” przy zerze obserwacji w klasie."
+  ocena: "zbyt pewna (Know(¬p) przy pustej klasie)."
+"T5#2":
+  frazy: [["W chwili obecnej w obiekcie W nie występuje cecha p", "¬p", "Know"], ["nasze przekonanie … jest bardzo silne", "¬p", "Bel"], ["dominujący i niezawodny sygnał od cechy r", "¬p", "Know"]]
+  nieklas: []
+  uzasadnienie: "tak, z halucynacją – „Istnieją obserwacje z p=0, r=1, q=1 (u5)” (u5 ma r=0)"
+  kontekst: "częściowo (tylko r)"
+  klasa_warunkowa: "nie – pusta klasa niezauważona"
+  spostrzezenia: "Halucynacja tworzy „dowód” na kombinację, której nie ma."
+  ocena: "zbyt pewna."
+"T5#3":
+  frazy: [["Moje przekonanie jest bardzo wysokie", "¬p", "Bel"], ["p musi być równe 0", "¬p", "Know"]]
+  nieklas: []
+  uzasadnienie: "tak – zauważa brak q1 r1 s1; reguła „r=1 ⇒ p=0” wyprowadzona przez kontrapozycję"
+  kontekst: "tak"
+  klasa_warunkowa: "pusta klasa zauważona, zastąpiona regułą"
+  spostrzezenia: "Empiryczna korelacja traktowana jak implikacja logiczna („musi”)."
+  ocena: "zbyt pewna."
+"D1#1":
+  frazy: [["Build najprawdopodobniej NIE zakończył się niepowodzeniem", "¬p", "Bel"]]
+  nieklas: ["„ok. 67% … 33%”"]
+  spostrzezenia: "Rachunek główny 4/8 poprawny. Poboczne fałsze w przykładach hipotetycznych: „q=1 → u3, u5, równe prawdopodobieństwo” (jest u3, u4, u5, 2:1), „s=1 → 2 przypadki p=1 i 5 p=0 (~71%)” (jest 2/7, 78%)."
+  ocena: "lekko zbyt pewna (Bel(¬p) przy λ=0.643)."
+"D1#2":
+  frazy: [["bardziej prawdopodobne jest, że build się powiódł", "¬p", "Pos"]]
+  nieklas: ["„2/3 przekonania … 1/3 przekonania”", "„Nie wiemy”"]
+  spostrzezenia: "Wprost odmawia zastosowania reguły r=1 ⇒ p=0, bo r jest nieznane – poprawnie. Poboczne fałsze: „r=0: p=1 (u1–u5)”, „u8, u9, u10: q=0, r=1, s=1”."
+  ocena: "zgodna."
+"D1#3":
+  frazy: [["bardziej prawdopodobne jest, że build nie zakończył się niepowodzeniem", "¬p", "Pos"]]
+  nieklas: ["„ok. 33,3% / 66,7%”"]
+  spostrzezenia: "Drobne błędy w rozkładach brzegowych (dla p=0: „r=1: 6 razy”, „s=1: 6, s=0: 2” – jest 5, 7, 1), bez wpływu na wniosek."
+  ocena: "zgodna."
+"D2#1":
+  frazy: [["build najprawdopodobniej zakończył się powodzeniem", "¬p", "Bel"], ["przekonanie … bardzo wysokie", "¬p", "Bel"]]
+  spostrzezenia: "Najpierw tylko u6, u7 jako pasujące, potem dołącza u8, u11, u12; fałsz „wszystkie przypadki z q=0 mają p=0”."
+  ocena: "zgodna (Bel(¬p)), z błędami w uzasadnieniu."
+"D2#2":
+  frazy: [["build najprawdopodobniej zakończył się sukcesem", "¬p", "Bel"], ["przekonanie … jest wysokie, że cecha p nie występuje", "¬p", "Bel"], ["build przebiegł pomyślnie", "¬p", "Know"]]
+  nieklas: ["„Stosunek szans na korzyść p=0 wynosi około 9.5 do 1” (≈ 90%)"]
+  uzasadnienie: "częściowo – fałszywie twierdzi, że „w zestawie treningowym nie ma żadnego przypadku, gdzie r=1 i s=1”, i zamiast klasy B3 liczy Naive Bayes (z wygładzaniem Laplace’a)"
+  klasa_warunkowa: "nie – klasa B3 = 0/5 nie wyznaczona"
+  spostrzezenia: "Deklaruje Naiwny Klasyfikator Bayesa jako „standard w tego typu zadaniach”. Osobna sekcja „Analiza semantyczna (heurystyka)”: dokumentacja rzadko psuje build, piątek = zmęczenie i pośpiech, brak zmiany zależności eliminuje „brakujące pakiety” – wiedza dziedzinowa zgodna z danymi, nie zmienia kierunku."
+  ocena: "kierunkowo zgodna; deklarowany stopień Bel, ale rachunek ~90% i końcowe zdanie kategoryczne (granica Know); bez klasy warunkowej."
+"D2#3":
+  frazy: [["przekonanie, że p = 0, jest bliskie pewności (100% …)", "¬p", "Know"], ["Ryzyko, że p = 1, jest zerowe", "¬p", "Know"]]
+  spostrzezenia: "Klasa B3 = 5/5 poprawnie („zbiór danych jest … spójny i deterministyczny”). Sekcja „Interpretacja semantyczna”: commity dokumentacyjne „rzadko powodują błędy kompilacji”, brak zmiany zależności „zmniejsza ryzyko błędów środowiskowych” – wiedza dziedzinowa jako wzmocnienie."
+  ocena: "zbyt pewna (Know(¬p))."
+"D3#1":
+  frazy: [["build najprawdopodobniej zakończył się niepowodzeniem", "p", "Bel"]]
+  nieklas: ["„~67% / ~33%”"]
+  ocena: "zgodna kierunkowo, lekko zbyt pewna."
+"D3#2":
+  frazy: [["[najprawdopodobniej] niepowodzenie … w dwóch na trzy znane przypadki", "p", "Pos/Bel"]]
+  spostrzezenia: "Klasa B4 z u5 poprawnie (w odróżnieniu od Qwen3.5-122B, który 2/3 razy gubił u5)."
+  ocena: "zgodna."
+"D3#3":
+  frazy: [["najbardziej prawdopodobne jest, że build zakończył się niepowodzeniem", "p", "Pos/Bel"], ["Stopień przekonania: Umiarkowanie wysoki", "p", "Bel"], ["Nie ma jednak całkowitej pewności … (u5)", "¬p", "Pos"]]
+  spostrzezenia: "Poboczny fałsz: „Podgrupa 2b r=0, s=1: u9, u10, p=0 w 100%” (pominięte u1, u2 z p=1)."
+  ocena: "zgodna (obie strony wyrażone)."
+"D4#1":
+  frazy: [["[bardziej prawdopodobne, że to] build z grupy sukcesów", "¬p", "Pos/Bel"], ["przekonanie … jest umiarkowane, ale skierowane w stronę „sukcesu”", "¬p", "Pos"], ["budul nie zakończył się niepowodzeniem", "¬p", "Know"]]
+  spostrzezenia: "Klasa B1 = 2/2 znaleziona („remis w liczbie dokładnych dopasowań”), po czym remis rozstrzygnięty priorem 8/12 i rachunkiem Naive Bayes (0.083 vs 0.128, ≈ 60% ¬p). Ten sam dryf co w T4#1. Semantyczny błąd: „q=0 – zmiany zależności”."
+  ocena: "niezgodna (rozstrzyga remis na ¬p zamiast Pos(p), Pos(¬p))."
+"D4#2":
+  frazy: [["nie można stwierdzić z wysokim stopniem pewności", "p/¬p", "(osłabienie)"], ["neutralne lub lekko skłonione ku p=0", "¬p", "Pos"], ["build najprawdopodobniej nie zakończył się niepowodzeniem", "¬p", "Bel"]]
+  nieklas: ["„ok. 75% szans na sukces, 25% na porażkę”"]
+  spostrzezenia: "Nagłówek twierdzi, że brak „bezpośrednich przykładów w historii dla tej konkretnej kombinacji”, a analiza znajduje 4 (B1 = 2/2). Remis rozstrzygnięty brzegiem q=0, policzonym błędnie jako 2/8 (jest 2/9). Sam przyznaje brak „dominującej reguły w wąskiej podgrupie”."
+  ocena: "niezgodna (dryf do brzegu q=0; Pos/Bel(¬p) zamiast Pos(p), Pos(¬p))."
+"D4#3":
+  frazy: [["Nie ma … podstaw do przekonania, że p=1 … jest bardziej prawdopodobne niż p=0", "p/¬p", "Pos"], ["moje przekonanie … wynosi 50% szans na porażkę i 50% na sukces", "p/¬p", "Pos"]]
+  spostrzezenia: "Wniosek poprawny mimo licznych fałszów pobocznych: „q=1 ⇒ p=1 zawsze (u3, u4, u5)”, „s=1, q=1, r=0 ⇒ p=1 (u3, u4)” (mają s=0), „więcej niepowodzeń niż powodzeń” w całej KB. Wiedza dziedzinowa wspomniana („s=1 … pośpiech lub brak testów, co zwiększa ryzyko”), ale nie zmienia wniosku."
+  ocena: "zgodna (wniosek), uzasadnienie z błędami."
+"D5#1":
+  frazy: [["przekonanie co do bieżącego stanu p jest takie, że p=0", "¬p", "Know"]]
+  spostrzezenia: "Pusta klasa zauważona. Wiedza dziedzinowa: kombinacja q=1 ∧ r=1 „nielogiczna w kontekście typowych repozytoriów”, commity dokumentacyjne „łatwiejsze”, zmiana zależności „może wymagać instalacji paczek”; na końcu reinterpretacja, że zmiana zależności „może być błędnie zidentyfikowana lub traktowana jako część dokumentacji”. Rozstrzyga reguła r=1 ⇒ p=0 i Naive Bayes; fałsz „r=1: 7/7 (u6–u12)” (u9, u10 mają r=0). 4645 tokenów analizy."
+  ocena: "zbyt pewna przy pustej klasie."
+"D5#2":
+  frazy: [["przekonanie, że build zakończył się niepowodzeniem, jest umiarkowanie wysokie", "p", "Bel"], ["Prawdopodobnie p = 1", "p", "Bel"]]
+  spostrzezenia: "Pusta klasa zauważona. Rozbudowany argument dziedzinowy: r=1 to tylko „brak zmian w kodzie”, a ryzyko z q=1 (błąd instalacji, konflikty wersji) pozostaje – „r=1 nie zapewnia ochrony przed błędami w zależnościach”. Fałsze: „(q=1, s=0): p=1 w 2/2”, „s=1: 2/8”."
+  ocena: "zbyt pewna przy pustej klasie (kierunek przeciwny do D5#1)."
+"D5#3":
+  frazy: [["niepowodzenie jest bardziej prawdopodobne", "p", "Pos/Bel"]]
+  spostrzezenia: "Brak danych dla q=1 ∧ r=1 rozstrzygnięty argumentem dziedzinowym: zmiana zależności to „ciężka” zmiana (brakujące pakiety, konflikty wersji), dokumentacja „lekka”."
+  ocena: "zbyt pewna przy pustej klasie; wyraźny wpływ wiedzy dziedzinowej."
+
+grid:
+  C_qx_rx_sx: "Pos(¬p) („neutralne z lekkim przesunięciem”, „ok. 58%”) – zgodna kierunkowo, ale rachunek błędny: KB policzona jako 5/7 (u5 zaliczone do p=1); fałszywa reguła „gdy q=0, p zawsze 0” (u1, u2)"
+  C_qx_rx_s0: "Pos/Bel(p) (~67%) – zgodna"
+  C_qx_rx_s1: "Bel(¬p) („wysokie”, ~78%) – zgodna"
+  C_qx_r0_sx: "Pos(p) (~57%, 4/7) – wniosek zgodny, ale uzasadnienie zmyślone: „gdy r=0, s zawsze 1” i stąd „wiemy pewnie, że s=1” (u3–u5 mają s=0); liczba 4/7 poprawna przypadkiem"
+  C_qx_r0_s0: "p (2/3) – wniosek zgodny, ale niespójna: pierwsze zdanie „najprawdopodobniej NIE występuje”, potem „Korekta wcześniejszej intuicji … najprawdopodobniej WYSTĘPUJE”"
+  C_qx_r0_s1: "neutralność (2/2) – zgodna"
+  C_qx_r1_sx: "„bardzo wysokie (bliskie pewności)” ¬p – zbyt pewna (Know zamiast Bel)"
+  C_qx_r1_s0: "„prawie pewne” ¬p z reguły r=1, kombinacja nowa zauważona – zbyt pewna przy pustej klasie"
+  C_qx_r1_s1: "„bliskie pewności” ¬p – zbyt pewna (Know zamiast Bel)"
+  C_q0_rx_sx: "Bel(¬p) („umiarkowanie silne”, 7/9) – zgodna"
+  C_q0_rx_s0: "„prawdopodobnie nie … wniosek niepewny”, pusta klasa zauważona; łączy s=0 (pominięte u5: „2/2 p=1”) z q=0 (7/9) – w przybliżeniu zgodna (słaba przewaga ¬p)"
+  C_q0_rx_s1: "Bel(¬p) („wysokie”, 7/9) – zgodna"
+  C_q0_r0_sx: "neutralność 50% – zgodna"
+  C_q0_r0_s0: "„silnie przesunięte” / „najprawdopodobniej nie” ¬p, kombinacja nowa zauważona – zbyt pewna; rozstrzyga zmyślona reguła „jeśli q=0, to p=0” (u1, u2 mają q=0, p=1) i „gdy q=1, p zawsze 1”"
+  C_q0_r0_s1: "neutralność – zgodna"
+  C_q0_r1_sx: "„bliskie pewności” ¬p – zbyt pewna (Know)"
+  C_q0_r1_s0: "„wysoki stopień pewności” ¬p z reguły r=1, pusta klasa zauważona – zbyt pewna"
+  C_q0_r1_s1: "„bardzo wysokie” ¬p, „brak wyjątków” – zbyt pewna (granica Know)"
+  C_q1_rx_sx: "p (~67%, umiarkowane) – zgodna"
+  C_q1_rx_s0: "p (2:1, umiarkowane) – zgodna"
+  C_q1_rx_s1: "„Nie … nie występuje” ¬p z całej KB; nowa kombinacja uznana za „błąd pomiarowy, a nie nowy wzorzec” – zbyt pewna (kategoryczny nagłówek); fałsz „q=1 ⇒ p=1 w 3/3”"
+  C_q1_r0_sx: "p „umiarkowanie silne” – wniosek zgodny, ale niespójna: pierwsze zdanie „najprawdopodobniej nie występuje (p = 0)”, potem „Poprawka analizy” i p=1; fałsz „p=1 ⇒ q=1 (u1–u4)”"
+  C_q1_r0_s0: "p (~67%) – zgodna"
+  C_q1_r0_s1: "„nie jestem w stanie jednoznacznie stwierdzić … umiarkowane przekonanie, że p może występować”, pusta klasa zauważona – lekko zbyt pewna, blisko neutralności"
+  C_q1_r1_sx: "„nie można jednoznacznie określić”, kombinacja unikalna – zgodna (neutralność przy pustej klasie)"
+  C_q1_r1_s0: "„wysokie” ¬p (p i r „wzajemnie wykluczające się”) – zbyt pewna przy pustej klasie"
+  C_q1_r1_s1: "¬p z reguły r=1 – zbyt pewna przy pustej klasie"

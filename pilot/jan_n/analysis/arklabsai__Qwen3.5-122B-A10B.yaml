@@ -1,0 +1,275 @@
+# Wstępna analiza odpowiedzi (PROPOZYCJA LLM – Claude Opus 5.5, do weryfikacji przez Jana N.)
+# klucz: "<test_id>#<repeat>"; format pól jak w arklabsai__Bielik-11B-v3.1-Instruct.yaml
+
+"T1#1":
+  frazy: [["jest bardziej prawdopodobne, iż cecha p nie występuje", "¬p", "Pos"]]
+  nieklas: ["„1/3 … 2/3”, „67%” – liczby", "„Nie wiemy, czy cecha p występuje” – stwierdzenie stanu wiedzy"]
+  uzasadnienie: "tak – poprawne 4 / 8 w całej KB"
+  kontekst: "nd. (kontekst pusty)"
+  klasa_warunkowa: "tak (cała KB)"
+  spostrzezenia: "Rozdziela „nie wiemy” (stan wiedzy) od „bardziej prawdopodobne” (przekonanie). Stopniowanie słabe („bardziej”), adekwatne do λ(p−)=0.643."
+  ocena: "zgodna (Pos(¬p); Pos(p) implicite przez „brak pewności”)."
+"T1#2":
+  frazy: [["Cecha p najprawdopodobniej nie występuje", "¬p", "Bel"], ["dwukrotnie większe prawdopodobieństwo, że cecha ta nie występuje", "¬p", "Bel"]]
+  nieklas: ["„33,3% … 66,7%” – liczby"]
+  uzasadnienie: "tak – poprawne 4 / 8"
+  kontekst: "nd."
+  klasa_warunkowa: "tak (cała KB)"
+  spostrzezenia: "Superlatyw „najprawdopodobniej” sygnalizuje Bel, choć λ(p−) jest tuż pod progiem."
+  ocena: "lekko zbyt pewna (Bel(¬p) przy λ=0.643 < 0.65); brak Pos(p)."
+"T1#3":
+  frazy: [["statystycznie bardziej prawdopodobne jest, iż p=0", "¬p", "Pos"], ["równie prawdopodobne jest, że p=0, jak i p=1 (z lekką przewagą … na brak cechy)", "p/¬p", "Pos"]]
+  nieklas: ["„nie można wyrazić przekonania co do występowania cechy p” – odmowa"]
+  uzasadnienie: "tak – 4 / 8; dodatkowo „brak nowych informacji”"
+  kontekst: "nd."
+  klasa_warunkowa: "tak (cała KB)"
+  spostrzezenia: "W jednym zdaniu „równie prawdopodobne” i „2/3 szans na brak” – wewnętrzna sprzeczność; deklarowana odmowa mimo podanych proporcji."
+  ocena: "niespójna (odmowa + przekonanie + „równie prawdopodobne” przy 4:8)."
+"T2#1":
+  frazy: [["najbardziej prawdopodobne jest, że cecha p … nie występuje", "¬p", "Bel"], ["z bardzo wysokim prawdopodobieństwem … nie występuje cecha p", "¬p", "Bel (granica Know)"]]
+  nieklas: []
+  uzasadnienie: "tak – filtruje q=0, r=1, s=1 → u6, u7, u8, u11, u12 (5/5 p=0); drobny lapsus „dokładnie 4 … w sumie 5”"
+  kontekst: "tak"
+  klasa_warunkowa: "tak (B3)"
+  spostrzezenia: "Dodatkowo zauważa, że r=1 wyklucza wszystkie historyczne p=1."
+  ocena: "zgodna (Bel(¬p)); „bardzo wysokie” na granicy przeszacowania."
+"T2#2":
+  frazy: [["można z dużym prawdopodobieństwem stwierdzić, że cecha p w tej chwili nie występuje", "¬p", "Bel"], ["dane empiryczne silnie wskazują na brak tej cechy", "¬p", "Bel"]]
+  nieklas: ["„nie można jednoznacznie stwierdzić” – zastrzeżenie (nie odmowa)"]
+  uzasadnienie: "tak – jawna filtracja wiersz po wierszu, 5/5"
+  kontekst: "tak"
+  klasa_warunkowa: "tak (B3)"
+  spostrzezenia: "Wzorcowa realizacja modelu z rozdz. 2.2.3."
+  ocena: "zgodna (Bel(¬p))."
+"T2#3":
+  frazy: [["historia obserwacji mocno sugeruje, że jej nie ma", "¬p", "Bel"], ["Wszystkie dostępne dane sugerują, że cecha ta nie występuje", "¬p", "Bel"]]
+  nieklas: ["„Nie wiemy, czy cecha p występuje” – stan wiedzy", "„nie możemy wykluczyć tej możliwości w 100%”"]
+  uzasadnienie: "tak – 5/5 w B3 + argument z małej próby („tylko 12 obserwacji”, „prawdopodobnie 0, ale nieznane”)"
+  kontekst: "tak"
+  klasa_warunkowa: "tak (B3)"
+  spostrzezenia: "Intuicyjnie odtwarza sens holonu: 5/5 to nie pewność, bo próba mała – dokładnie dlatego λ(p−)=0.857 < 0.9."
+  ocena: "zgodna (Bel(¬p), wyraźnie bez Know)."
+"T3#1":
+  frazy: [["istnieje bardzo silne przesłanie, że cecha p nie występuje", "¬p", "Bel"], ["najbardziej prawdopodobne jest, że cecha p występuje", "p", "Bel"], ["nieznany z pewnym wskazaniem na wartość 1", "p", "Pos"]]
+  nieklas: ["„2/3 (ok. 67%)”, „ok. 33%” – liczby", "„Poprawka w myśleniu (re-evaluacja)” – autokorekta w treści odpowiedzi"]
+  uzasadnienie: "tak – po autokorekcie poprawna klasa B4 = {u3, u4, u5}, 2/1"
+  kontekst: "tak"
+  klasa_warunkowa: "tak (po autokorekcie)"
+  spostrzezenia: "Pierwsze zdanie (¬p, „bardzo silne”) przeczy wnioskowi końcowemu (p, „pewne wskazanie”). Model pisze tezę przed analizą (brak ukrytego rozumowania, reasoning_tokens=0)."
+  ocena: "konkluzja zgodna (Pos(p), z ryzykiem ¬p ok. 33%), ale odpowiedź niespójna (nagłówek odwrotny)."
+"T3#2":
+  frazy: [["Nasze przekonanie co do stanu p … musi pozostać nieokreślone", "—", "—"]]
+  nieklas: ["„nie mamy żadnych podstaw, aby przypisać cechę p jako występującą ani jako niewystępującą” – odmowa"]
+  uzasadnienie: "tak – poprawna klasa B4 (2/1), ale wniosek „brak reguły deterministycznej ⇒ brak przekonania”"
+  kontekst: "tak"
+  klasa_warunkowa: "tak (B4)"
+  spostrzezenia: "Dobre liczenie, ale utożsamia przekonanie z regułą deterministyczną i odrzuca przewagę 2:1."
+  ocena: "zbyt ostrożna (ref. Pos(p), Pos(¬p) z przewagą p)."
+"T3#3":
+  frazy: [["można z dużym prawdopodobieństwem stwierdzić, że … cecha p nie występuje", "¬p", "Bel"], ["z bardzo wysokim prawdopodobieństwem występuje cecha p", "p", "Bel (granica Know)"]]
+  nieklas: ["„Moja wcześniejsza analiza w punkcie 1 była błędna” – autokorekta"]
+  uzasadnienie: "tak – najpierw fałszywa reguła „q=1 ⇒ p=1 zawsze (u3, u4, u5)”, potem poprawne 2/1 w B4"
+  kontekst: "tak (po autokorekcie)"
+  klasa_warunkowa: "tak (po autokorekcie)"
+  spostrzezenia: "Najpierw ¬p, potem p „z bardzo wysokim prawdopodobieństwem” przy 2 vs 1."
+  ocena: "zbyt pewna (Bel+ (p) przy λ(p+)=0.6) i niespójna (nagłówek odwrotny)."
+"T4#1":
+  frazy: [["istnieje silne prawdopodobieństwo, że cecha p nie występuje", "¬p", "Bel"], ["z umiarkowanym stopniem pewności … cecha p nie występuje", "¬p", "Bel/Pos"]]
+  nieklas: ["„78%”, „7/9”, „4/7” – liczby z różnych podzbiorów"]
+  uzasadnienie: "tak – poprawnie znajduje B1 = {u1, u2, u9, u10} (2/2), ale wybiera podzbiór s=1 (7/9) jako „główny punkt oparcia”; błąd globalny „7 na 12 … 5 na 12”"
+  kontekst: "częściowo (zna klasę pełną, ale wnioskuje z klasy częściowej s=1)"
+  klasa_warunkowa: "znaleziona, ale odrzucona"
+  spostrzezenia: "Klasyczne „dryfowanie” do szerszego podzbioru, gdy węższa klasa daje remis. Narusza model: kontekst pełny ⇒ liczy się tylko B1."
+  ocena: "zbyt pewna i kierunkowo niezgodna (Bel(¬p) zamiast Pos(p), Pos(¬p))."
+"T4#2":
+  frazy: []
+  nieklas: ["„Prawdopodobieństwo wystąpienia cechy p wynosi więc 50%” – liczba", "„nie można sformułować przekonania co do wartości p” – odmowa"]
+  uzasadnienie: "tak – B1 = 2/2"
+  kontekst: "tak"
+  klasa_warunkowa: "tak (B1)"
+  spostrzezenia: "Poprawny rachunek, ale remis interpretowany jako brak przekonania, a nie dwie słabe możliwości."
+  ocena: "zbyt ostrożna formalnie (brak komunikatu Pos), merytorycznie zgodna (50/50)."
+"T4#3":
+  frazy: [["w bieżącej obserwacji obiektu W cecha p nie występuje", "¬p", "Know"], ["Cecha p prawdopodobnie NIE występuje, ale z istotnym marginesem niepewności", "¬p", "Pos"], ["skłaniałbym się ku stwierdzeniu, że cecha p NIE występuje", "¬p", "Pos"]]
+  nieklas: ["„nieokreślony (równomierny rozkład prawdopodobieństwa)” – końcowe sformułowanie neutralne"]
+  uzasadnienie: "tak, chaotyczne – B1 = 2/2 znalezione, potem błędne „4 przypadki p=1 (u1, u2) i 2 przypadki p=0 … 66%”, potem odwołanie do całej KB 8/12"
+  kontekst: "częściowo"
+  klasa_warunkowa: "znaleziona, ale przemieszana z marginesem"
+  spostrzezenia: "Trzy różne stanowiska w jednej odpowiedzi: kategoryczne ¬p, słabe ¬p, neutralność."
+  ocena: "niespójna (Know(¬p) w nagłówku vs. neutralność w zakończeniu)."
+"T5#1":
+  frazy: [["Nasze przekonanie … jest nieokreślone (neutralne)", "p/¬p", "Pos"]]
+  nieklas: ["„nie jesteśmy w stanie określić stanu cechy p” – odmowa uzasadniona brakiem danych"]
+  uzasadnienie: "tak – „nie zaobserwowano ani razu połączenia q=1, r=1, s=1”; marginesy pojedynczych cech policzone błędnie (q „4 razy”, r „6 razy”, s „8 razy”), ale świadomie odrzucone"
+  kontekst: "tak"
+  klasa_warunkowa: "tak – rozpoznaje pustą klasę B7"
+  spostrzezenia: "Jedno z niewielu zachowań wprost zgodnych z intencją modelu: pusta klasa ⇒ brak przesłanek ⇒ neutralność."
+  ocena: "zgodna (Pos/Pos, brak danych zasygnalizowany)."
+"T5#2":
+  frazy: [["prawdopodobnie nie występuje cecha p", "¬p", "Bel"], ["silna inferencja statystyczna", "¬p", "Bel"]]
+  nieklas: []
+  uzasadnienie: "tak – reguła „r=1 ⇒ p=0” z błędnym zliczeniem („7 przypadków: u6, u7, u8, u11, u12 oraz u9, u10” – u9, u10 mają r=0)"
+  kontekst: "częściowo (używa tylko r)"
+  klasa_warunkowa: "nie – pusta klasa niezasygnalizowana, zastąpiona klasą r=1"
+  spostrzezenia: "Uogólnianie z jednej cechy zamiast przyznania braku danych."
+  ocena: "zbyt pewna (Bel(¬p) przy pustej klasie)."
+"T5#3":
+  frazy: [["nie wiemy, czy cecha p występuje", "p/¬p", "Pos"]]
+  nieklas: ["„taka statystyka [4/12 vs 8/12] jest myląca i nieodpowiednia” – świadome odrzucenie marginesu"]
+  uzasadnienie: "tak – „nigdy nie zaobserwowano sytuacji, w której q, r i s byłyby jednocześnie równe 1”"
+  kontekst: "tak"
+  klasa_warunkowa: "tak – rozpoznaje pustą klasę"
+  spostrzezenia: "Dodatkowo zauważa, że obecna obserwacja łamie dotychczasowe współwystępowania (q=1 ⇒ r=0)."
+  ocena: "zgodna (neutralność, brak danych zasygnalizowany)."
+"D1#1":
+  frazy: [["istnieje większe prawdopodobieństwo (2 do 1), że build zakończył się sukcesem", "¬p", "Pos"]]
+  nieklas: ["„jedyną poprawną odpowiedzią logiczną jest stwierdzenie, że stan jest nieokreślony” – odmowa", "„2/3 (67%) … 1/3 (33%)”"]
+  uzasadnienie: "tak – poprawne 4 / 8"
+  kontekst: "nd."
+  klasa_warunkowa: "tak (cała KB)"
+  spostrzezenia: "Dziedzinowo: sugeruje „oczekiwanie na wynik CI” – myślenie praktyczne zamiast aproksymacji."
+  ocena: "częściowo zgodna (Pos(¬p)), ale z deklaratywną odmową na końcu."
+"D1#2":
+  frazy: [["nasza wiara co do stanu p jest całkowicie nieokreślona", "—", "—"]]
+  nieklas: ["„Stan cechy p pozostaje w tej chwili nieznany” – odmowa"]
+  uzasadnienie: "tak, błędne – „p=1 … gdy q=0 i r=0 (jak w wierszach u1, u2, u9, u10)” (u9, u10 mają p=0); rozkładu bazowego 4/8 nie używa"
+  kontekst: "nd."
+  klasa_warunkowa: "nie"
+  spostrzezenia: "Brak reguły deterministycznej utożsamiony z brakiem przekonania."
+  ocena: "zbyt ostrożna (ref. Pos(p), Pos(¬p))."
+"D1#3":
+  frazy: []
+  nieklas: ["„nie można przypisać mu żadnego prawdopodobieństwa ani stanu” – odmowa, mimo podanego „33% szans historycznych”"]
+  uzasadnienie: "tak, częściowo błędne – „s=1 … przy niepowodzeniach (u1, u2, u9, u10)” (u9, u10 to sukcesy)"
+  kontekst: "nd."
+  klasa_warunkowa: "nie"
+  spostrzezenia: "Podaje częstość bazową i jednocześnie odmawia przypisania prawdopodobieństwa."
+  ocena: "zbyt ostrożna i niespójna."
+"D2#1":
+  frazy: [["Z dużym prawdopodobieństwem można stwierdzić, że build zakończył się sukcesem", "¬p", "Bel"]]
+  nieklas: []
+  uzasadnienie: "tak – r=1, s=1 → u6, u7, u8, u11, u12 (5/5 p=0)"
+  kontekst: "tak"
+  klasa_warunkowa: "tak (ten sam zbiór co B3)"
+  spostrzezenia: "Dane i wiedza dziedzinowa zgodne; wynik adekwatny."
+  ocena: "zgodna (Bel(¬p))."
+"D2#2":
+  frazy: [["Moje przekonanie … jest takie, że wartość ta wynosi 0", "¬p", "Know"], ["Ryzyko błędu … wynosi 0%", "¬p", "Know"]]
+  nieklas: ["„0%” – liczba"]
+  uzasadnienie: "tak – reguła „r=1 ⇒ p=0” (5/5)"
+  kontekst: "tak"
+  klasa_warunkowa: "tak"
+  spostrzezenia: "Częstość z próby 5 traktowana jako prawdopodobieństwo; brak korekty na małą próbę."
+  ocena: "zbyt pewna (Know(¬p) zamiast Bel(¬p))."
+"D2#3":
+  frazy: [["jest bardzo prawdopodobne, że build zakończył się niepowodzeniem", "p", "Bel"], ["nasze przekonanie jest silne, że obecny build zakończył się sukcesem", "¬p", "Bel"], ["jest wysoce prawdopodobne, że … build zakończył się sukcesem", "¬p", "Bel"]]
+  nieklas: ["„Jeśli w pytaniu oczekiwano odpowiedzi «tak, zakończył się niepowodzeniem» …” – metakomentarz o intencji pytającego"]
+  uzasadnienie: "tak – B3 5/5"
+  kontekst: "tak"
+  klasa_warunkowa: "tak"
+  spostrzezenia: "Nagłówek (Bel(p)) przeczy całej analizie (Bel(¬p)). Model próbuje odgadnąć „oczekiwaną” odpowiedź."
+  ocena: "konkluzja zgodna (Bel(¬p)), odpowiedź niespójna."
+"D3#1":
+  frazy: [["Najbardziej prawdopodobnym scenariuszem jest, że build zakończył się sukcesem", "¬p", "Bel"], ["Jest bardziej prawdopodobne, że p = 1", "p", "Pos"], ["istnieje wysokie prawdopodobieństwo niepowodzenia, choć nie jest ono gwarantowane", "p", "Bel"]]
+  nieklas: ["„66%”, „33%”"]
+  uzasadnienie: "tak – B4 2/1"
+  kontekst: "tak"
+  klasa_warunkowa: "tak"
+  spostrzezenia: "Nagłówek ¬p, zakończenie p. Dziedzinowe słownictwo „piątkowy czynnik ryzyka” (s=0 opisane jako brak czynnika ryzyka – założenie spoza danych)."
+  ocena: "niespójna; konkluzja lekko zbyt pewna („wysokie” przy λ(p+)=0.6)."
+"D3#2":
+  frazy: [["można z bardzo wysokim stopniem pewności stwierdzić, że … build nie powiódł się", "p", "Know"]]
+  nieklas: ["„w 100% podobnych historycznych scenariuszy”"]
+  uzasadnienie: "tak, błędne – pomija u5 (q=1, r=0, s=0, p=0): „tylko dwa przypadki … u3, u4”"
+  kontekst: "tak"
+  klasa_warunkowa: "błędnie wyznaczona (2/0 zamiast 2/1)"
+  spostrzezenia: "Błąd filtracji zamienia słabą przewagę w „pewność”."
+  ocena: "zbyt pewna (Know(p) zamiast Pos/Pos) na skutek błędu w klasie."
+"D3#3":
+  frazy: [["z bardzo dużym prawdopodobieństwem … build zakończył się niepowodzeniem", "p", "Bel"], ["nasze przekonanie co do stanu p = 1 jest bardzo silne", "p", "Bel (granica Know)"]]
+  nieklas: []
+  uzasadnienie: "tak, błędne – jak D3#2, pomija u5; „piątkowy pechowy czas”"
+  kontekst: "tak"
+  klasa_warunkowa: "błędnie wyznaczona (2/0)"
+  spostrzezenia: "Powtórzenie błędu z D3#2 – wariant dziedzinowy dwa razy na trzy gubi u5 (wariant symboliczny 0/3)."
+  ocena: "zbyt pewna."
+"D4#1":
+  frazy: [["Moje przekonanie co do stanu p jest niezdecydowane (neutralne)", "p/¬p", "Pos"]]
+  nieklas: ["„50% prawdopodobieństwo” ×2"]
+  uzasadnienie: "tak – B1 = {u1, u2, u9, u10}, 2/2"
+  kontekst: "tak"
+  klasa_warunkowa: "tak"
+  spostrzezenia: "Wzorcowo; jawnie zauważa, że s nie różnicuje wyników w tej klasie."
+  ocena: "zgodna (Pos(p), Pos(¬p))."
+"D4#2":
+  frazy: [["można z bardzo dużym prawdopodobieństwem stwierdzić, że build zakończył się niepowodzeniem", "p", "Bel"], ["Jest wysokie prawdopodobieństwo niepowodzenia, ale nie jest to pewne", "p", "Bel"], ["ryzyko niepowodzenia wynosi 50%, co jest sytuacją niepewną", "p/¬p", "Pos"]]
+  nieklas: ["odpowiedź zdegenerowana: pętla „Odpowiedź końcowa … Czy jednak pytanie oczekuje odpowiedzi «Tak»?” do wyczerpania limitu 16384 tokenów (finish_reason=length, ok. 49 tys. znaków)"]
+  uzasadnienie: "tak, chaotyczne – B1 2/2 policzone poprawnie wielokrotnie; fałsz „q=1 ⇒ zawsze p=1 (u3, u4, u5)”"
+  kontekst: "tak"
+  klasa_warunkowa: "tak, ale wielokrotnie podważana"
+  spostrzezenia: "Wyraźne zaciąganie wiedzy dziedzinowej: „piątkowe commity … często są obarczone ryzykiem (np. zmęczone zespoły, brak czasu na testy przed weekendem)”. Model próbuje odgadnąć, jakiej odpowiedzi oczekuje pytający."
+  ocena: "niespójna / zdegenerowana; najmocniejszy przykład wpływu interpretacji dziedzinowej."
+"D4#3":
+  frazy: [["można z bardzo wysokim prawdopodobieństwem stwierdzić, że … build zakończył się niepowodzeniem", "p", "Bel"], ["Moje przekonanie co do stanu p jest neutralne", "p/¬p", "Pos"]]
+  nieklas: ["„Moja wcześniejsza intuicja o «bardzo wysokim prawdopodobieństwie» była zbyt daleko idąca” – autokorekta", "„50% szans … rzut monetą”"]
+  uzasadnienie: "tak – B1 2/2; fałszywe „9 przypadków z 12 to piątki, z czego 4 upadły” (upadły 2)"
+  kontekst: "tak"
+  klasa_warunkowa: "tak"
+  spostrzezenia: "Teza z nagłówka (p) wynika z intuicji dziedzinowej „piątek = ryzyko”, nie z danych; dane prowadzą model do korekty."
+  ocena: "konkluzja zgodna (Pos/Pos), odpowiedź niespójna; widoczny wpływ wiedzy dziedzinowej."
+"D5#1":
+  frazy: [["można z bardzo dużym prawdopodobieństwem stwierdzić, że build zakończył się niepowodzeniem", "p", "Bel"], ["należy sądzić, że … build zakończył się sukcesem", "¬p", "Bel"], ["Jest to przekonanie silne", "¬p", "Bel"]]
+  nieklas: ["„Cecha p (błąd) wynosi 0” – stwierdzenie kategoryczne"]
+  uzasadnienie: "tak, chaotyczne – zauważa brak przypadków q=1 ∧ r=1, potem halucynacje („s=1, q=0, r=0 (u1, u2, u9, u10) → p=1”), kNN, reguła „r=1 ⇒ p=0”"
+  kontekst: "tak"
+  klasa_warunkowa: "pusta klasa zauważona, ale zastąpiona regułą z jednej cechy"
+  spostrzezenia: "Nagłówek p, wniosek ¬p. Najdłuższe „rozumowanie na głos” w zestawie (3226 tokenów)."
+  ocena: "niespójna i zbyt pewna (Bel(¬p) przy pustej klasie)."
+"D5#2":
+  frazy: [["można z bardzo wysokim prawdopodobieństwem stwierdzić, że build zakończył się niepowodzeniem", "p", "Bel"], ["Moje przekonanie co do tego, że p=1, jest silne", "p", "Bel"]]
+  nieklas: []
+  uzasadnienie: "tak, błędne – „gdy q=0, build nigdy nie zawiódł (9 przypadków)” i „wszystkie przypadki p=1 zawierały q=1” (fałsz: u1, u2)"
+  kontekst: "tak"
+  klasa_warunkowa: "pusta klasa zauważona („unikalna kombinacja”), ale zignorowana"
+  spostrzezenia: "Dziedzinowo: „W typowych systemach CI zmiana zależności jest silnym predyktorem niepowodzenia” – argument spoza danych, wsparty zmyśloną regułą."
+  ocena: "zbyt pewna (Bel(p) przy pustej klasie); wpływ wiedzy dziedzinowej."
+"D5#3":
+  frazy: [["Bardzo prawdopodobne jest, że build zakończył się sukcesem", "¬p", "Bel"], ["Cecha p najprawdopodobniej wynosi 0", "¬p", "Bel"]]
+  nieklas: []
+  uzasadnienie: "tak – zauważa brak q=1 ∧ r=1, wybiera regułę „r=1 ⇒ p=0” jako dominującą"
+  kontekst: "tak"
+  klasa_warunkowa: "pusta klasa zauważona, ale zastąpiona regułą z jednej cechy"
+  spostrzezenia: "D5: trzy powtórzenia → ¬p, p, ¬p – kierunek zależy od tego, którą pojedynczą cechę model uzna za „dominującą”."
+  ocena: "zbyt pewna (Bel(¬p) przy pustej klasie)."
+
+grid:
+  C_qx_rx_sx: "odmowa („całkowicie nieokreślone”) mimo 8:4 – zbyt ostrożna"
+  C_qx_rx_s0: "Bel(p) – kierunek zgodny (2/1), ale z fałszem „gdy s=0, p zawsze było 1” (u5)"
+  C_qx_rx_s1: "Bel(¬p) („ponad 75%”) – zgodna"
+  C_qx_r0_sx: "nagłówek ¬p, wniosek Pos(p) („z bardzo małą pewnością”) – konkluzja zgodna, niespójna"
+  C_qx_r0_s0: "Bel(¬p), „przekonanie silne” – sprzeczna (ref. przewaga p, 2/1)"
+  C_qx_r0_s1: "zauważa 2/2, mimo to „NIE występuje” z marginesu 33% – zbyt pewna, dryf do całej KB"
+  C_qx_r1_sx: "Pos/Bel(¬p) („najbardziej prawdopodobny brak, ale nie pewny”) – zgodna"
+  C_qx_r1_s0: "„bardzo wysokie (prawie pewne)” ¬p, halucynacja klasy (u6… z s=0) – zbyt pewna, pusta klasa niezauważona"
+  C_qx_r1_s1: "Pos(¬p) („niepewne … znacząca szansa p=1”) – zbyt ostrożna (ref. Bel(¬p))"
+  C_q0_rx_sx: "odmowa („stan nieznany”) – zbyt ostrożna (ref. Bel(¬p))"
+  C_q0_rx_s0: "Bel(¬p) przy pustej klasie (zauważonej) – zbyt pewna"
+  C_q0_rx_s1: "Pos(¬p) („lekkie przesunięcie”) – zbyt ostrożna (ref. Bel(¬p))"
+  C_q0_r0_sx: "„przekonanie zerowe” – odmowa przy 2/2; formalnie zbyt ostrożna"
+  C_q0_r0_s0: "halucynacja: u9, u10 jako (0,0,0) → „nie występuje, silne” – zbyt pewna przy pustej klasie"
+  C_q0_r0_s1: "neutralność z lekkim wskazaniem ¬p – w przybliżeniu zgodna"
+  C_q0_r1_sx: "Bel(¬p) („bardzo wysokie”) – zgodna (granica Know)"
+  C_q0_r1_s0: "„bardzo silne … 100% zgodności dla tego zestawu cech” – halucynacja, zbyt pewna przy pustej klasie"
+  C_q0_r1_s1: "Bel(¬p) („wysoce prawdopodobne”) – zgodna"
+  C_q1_rx_sx: "Pos/Bel(p) („prawdopodobny, dominujący scenariusz”) – zgodna"
+  C_q1_rx_s0: "nagłówek ¬p („bardzo silne”), wniosek p („silnie sugeruje”) – niespójna, konkluzja zbyt pewna"
+  C_q1_rx_s1: "Bel(¬p) z marginesu s=1, pusta klasa zauważona – zbyt pewna"
+  C_q1_r0_sx: "Pos(p) („częściej 1, nie reguła”) – zgodna"
+  C_q1_r0_s0: "nagłówek ¬p, wniosek „umiarkowane przekonanie” p (2/3) – konkluzja zgodna, niespójna"
+  C_q1_r0_s1: "„najbezpieczniej p=0”, pusta klasa zauważona – lekko zbyt pewna"
+  C_q1_r1_sx: "Bel(¬p) z reguły r=1, kombinacja „bezprecedensowa” zauważona – zbyt pewna"
+  C_q1_r1_s0: "„silne przekonanie” ¬p, pusta klasa zauważona – zbyt pewna"
+  C_q1_r1_s1: "„bardzo silne” ¬p z reguły r=1 ∧ s=1, pusta klasa zauważona – zbyt pewna (por. T5: 2/3 neutralne)"
+
+meta:
+  uwagi: "max_tokens=16384 (model z flagą ark_reasoning); dostawca nie dokleja system promptu (prompt_tokens ≈ 360); reasoning_tokens = 0 – rozumowanie, jeśli jest, pojawia się wprost w treści odpowiedzi"

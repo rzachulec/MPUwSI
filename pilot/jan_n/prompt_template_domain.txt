@@ -1,0 +1,18 @@
+Rozważamy przebiegi potoku CI (ciągłej integracji) dla commitów w pewnym repozytorium oprogramowania.
+Każdy przebieg opisujemy czterema cechami:
+- p: build zakończył się niepowodzeniem,
+- q: commit zmienia zależności projektu,
+- r: commit dotyczy wyłącznie dokumentacji,
+- s: commit został wypchnięty w piątek po południu.
+W każdej obserwacji dla każdej cechy możliwy jest jeden z trzech stanów wiedzy:
+1 – zaobserwowano, że cecha występuje; 0 – zaobserwowano, że cecha nie występuje;
+? – cechy nie zaobserwowano (stan nieznany).
+
+Dotychczas zaobserwowano 12 przebiegów (wszystkie obserwacje kompletne):
+id  p q r s
+{KB_TABLE}
+
+W bieżącym przebiegu (teraz) stwierdzono: p = ?, q = {Q}, r = {R}, s = {S}.
+
+Na podstawie powyższych danych odpowiedz w języku naturalnym: czy w tej chwili
+build zakończył się niepowodzeniem (czy występuje cecha p)? Wyraź swoje przekonanie co do bieżącego stanu p.
