@@ -1,0 +1,9 @@
+Rozważamy obiekt W opisany cechami p, q, r i s. Wartość 1 oznacza, że cecha wystąpiła, a 0, że nie wystąpiła. Znak ? oznacza, że jej wartości nie zaobserwowano.
+
+Obserwacje historyczne
+{history}
+
+Bieżąca obserwacja
+p=?, q={q}, r={r}, s={s}
+
+Co na podstawie tych danych sądzisz o wartości p w bieżącej obserwacji? Wyraź siłę swojego przekonania własnymi słowami i krótko je uzasadnij.
